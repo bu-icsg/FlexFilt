@@ -1,9 +1,12 @@
 # FlexFilt
 Flexible Instruction Filtering for Security.
+Note: FlexFilt will be officially released soon. This document is provided for ACSAC artifact evaluation.
 
 ## Overview
 In this document, we provide a guideline for running experiments on FlexFilt. For more details on FlexFilt please refer to our paper.
 We run our experiments on the Xilinx Zynq Zedboard FPGA and use a modified Linux kernel 4.15 to provide the support for our hardware.
+You can find the source code for our test programs in the code folder.
+The evaluation folder includes the binaries for running the tests on the baseline and FlexFilt configurations.
 
 ## Accessing the experiment environment
 To simplify the process of testing FlexFilt, we provide you with access to our FPGA boards.
@@ -14,16 +17,16 @@ You can ssh to our machine after configuring the private ssh key:
   $ ssh flexfilt@icsg-04.bu.edu
 ```
 
-You have access to two of our FPGAs available at /dev/ttyACM0 and /dev/ttyACM1.
-For simplicity, in the rest of this document we call the FPGA connected to /dev/ttyACM0 as ACM0 and the one connected to /dev/ttyACM1 as ACM1.
+You have access to two of our FPGAs available at /dev/ttyACM1 and /dev/ttyACM2.
+For simplicity, in the rest of this document we call the FPGA connected to /dev/ttyACM1 as ACM1 and the one connected to /dev/ttyACM2 as ACM2.
 We suggest you to use screen for connecting to these two FPGAs (we have provided you screen access to these two nodes).
-However, if you want to do ssh or scp to ACM0 and ACM1, their ip addresses are 192.168.1.30 and 192.168.1.31, respectively.
+However, if you want to do ssh or scp to ACM0 and ACM1, their ip addresses are 192.168.1.31 and 192.168.1.32, respectively.
 The username and password of the FPGAs are both root.
-We have already configured ACM0 and ACM1 with necessary files to run the baseline and FlexFilt experiments, respectively.
+We have already configured ACM1 and ACM2 with necessary files to run the baseline and FlexFilt experiments, respectively.
 To access the experiment environment of the baseline, connect to ACM0 using screen:
 
 ```
-  $ screen -S ACM0 /dev/ttyACM0 115200
+  $ screen -S ACM0 /dev/ttyACM1 115200
 ```
 
 Please make sure to use 115200 as the baud rate in the screen command.
@@ -33,7 +36,7 @@ a baseline Rocketchip processor and to boot up the Linux kernel.
 Similarly, you can connect to ACM1, the experiment environment for FlexFilt:
 
 ```
-  $ screen -S ACM1 /dev/ttyACM1 115200
+  $ screen -S ACM1 /dev/ttyACM2 115200
 ```
 
 Here, you have all the required files to configure the PL side of the zedboard with a Rocket
@@ -45,8 +48,8 @@ To reattach to the screen session use the following
 command:
 
 ```
-  $ screen -rd -S ACM0
   $ screen -rd -S ACM1
+  $ screen -rd -S ACM2
 ```
 
 As mentioned before, we provide the necessary files and scripts to configure the FPGA, boot up the
@@ -111,16 +114,23 @@ Run the buffer overflow example:
 As expected, FlexFilt allows the execution of the target instruction in the trusted function and prevents its execution in the function executed by leveraging the buffer overflow vulnerability.
 
 ### Performance Evaluation
-To demonstrate the negligble performance overhead of FlexFilt, we provide the executables for running two spec2000 benchmark applications (i.e., bzip2 and gcc) on the baseline Rocket core and the core enhanced with FlexFilt.
-To run the baseline experiments, run the spec script on ACM0:
+To demonstrate the negligble performance overhead of FlexFilt, we provide the executables for running a spec2000 benchmark application (i.e., bzip2) on the baseline Rocket core and the core enhanced with FlexFilt.
+To run the baseline experiments, run the spec script on ACM1:
 
 ```
   $ ./spec_baseline.sh
 ```
 
-To run the FlexFilt experiments, run the spec script on ACM1:
+To run the FlexFilt experiments, run the spec script on ACM2:
 
 ```
   $ ./spec_flexfilt.sh
+```
+
+After the kernel boots up, you can run and time the execution of the benchmark:
+
+```
+  $ cd home/256.bzip2
+  $ time ./bzip2.rv data/test/input/input.random 2
 ```
 
