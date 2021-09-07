@@ -64,29 +64,51 @@ After you are done with one set of experiments, the easiest way to exit the Linu
 
 ### Functional Verification
 For functional verification, we provide two sample programs.
-The first program prevents the execution of WRPKRU instruction anywhere in the default domain.
+The first program prevents the execution of WRPKR instruction (the equivalent of WRPKR in our RISC-V prototype) anywhere in the default domain.
 The second program follows the scenario described in Section 7.2 of the paper.
-In this scenario, we have two trusted functions, i.e., good_code1 and good_code2, that are allowed to execute WPKRU extended instruction.
+In this scenario, we have two trusted functions, i.e., good_code1 and good_code2, that are allowed to execute WRPKR extended instruction.
 The execution of WRPKR instruction should be prevented in the rest of the program.
-As described in Section 5.3 of the paper, we assign the same ipkey value to both trusted functions and then configure FlexFilt to prevent the executoin of WRPKRU in the default domain.
-We use LD_PRELOAD to obtain the address range of the two trusted functions, and then invok pkey_mprotect to associate them with the same instruction protection key.
+As described in Section 5.3 of the paper, we assign the same ipkey value to both trusted functions and then configure FlexFilt to prevent the executoin of WRPKR in the default domain.
+We use LD_PRELOAD to obtain the address range of the two trusted functions, and then invoke pkey_mprotect to associate them with the same instruction protection key.
 
-To run these two test programs, please run the filter script (filter.sh) on ACM1:
-
-```
-  $ ./filter.sh
-```
-
-To demonstrate FlexFilt's capability in preventing a security attack (Section 7.2 of the paper), we provide two sample programs with buffer overflow vulnerabilities.
-We provide an input for these two programs leveraging the buffer overflow vulnerabilities to execute a function that is never called in the program.
+To demonstrate FlexFilt's capability in preventing a security attack (Section 7.2 of the paper), we provide a sample program with buffer overflow vulnerabilities.
+We provide an input for this program leveraging the buffer overflow vulnerability to execute a function that is never called in the program.
 This function executes a WRPKR instruction to modify the permission bits of a protection domain.
-We Configure FlexFilt to prevent the exuction of WRPKR instruction in the default domain.
+We Configure FlexFilt to prevent the exuction of WRPKR instruction in the default domain and allow its execution in a trusted function.
 
-To run these two test programs with FlexFilt's protection, run the script (vuln.sh) on ACM1:
+We provide the binaries for these programs as part of our bbl. 
+To run these test programs, you first need to bootup the kernel using bbl_func. To do this, please run func.sh script after connecting to ACM1:
 
 ```
-  $ ./vuln.sh
+  $ ./func.sh
 ```
+
+After the kernel boots up, you can run each of the above-mentioned test programs. First, you need to go to the home folder.
+
+```
+  $ cd home 
+```
+
+Run the first test program:
+```
+  $ ./vuln1.rv 
+```
+
+As expected, FlexFilt prevents the execution of the unsafe instruction in the default domain.
+
+Run the second test program:
+```
+  $ LD_PRELOAD=./myfilter.so ./filter2.rv
+```
+
+As expected, FlexFilt prevents the execution of the target instruction in the untrusted funtion and allows its execution in the two trusted functions.
+
+Run the buffer overflow example:
+
+```
+  $ cat payload1.txt | LD_PRELOAD=./myfilter.so ./vuln1.rv
+```
+As expected, FlexFilt allows the execution of the target instruction in the trusted function and prevents its execution in the function executed by leveraging the buffer overflow vulnerability.
 
 ### Performance Evaluation
 To demonstrate the negligble performance overhead of FlexFilt, we provide the executables for running two spec2000 benchmark applications (i.e., bzip2 and gcc) on the baseline Rocket core and the core enhanced with FlexFilt.
