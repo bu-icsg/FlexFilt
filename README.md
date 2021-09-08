@@ -20,13 +20,13 @@ You can ssh to our machine after configuring the private ssh key:
 You have access to two of our FPGAs available at /dev/ttyACM1 and /dev/ttyACM2.
 For simplicity, in the rest of this document we call the FPGA connected to /dev/ttyACM1 as ACM1 and the one connected to /dev/ttyACM2 as ACM2.
 We suggest you to use screen for connecting to these two FPGAs (we have provided you screen access to these two nodes).
-However, if you want to do ssh or scp to ACM0 and ACM1, their ip addresses are 192.168.1.31 and 192.168.1.32, respectively.
+However, if you want to do ssh or scp to ACM0 and ACM1, their ip addresses are 192.168.1.33 and 192.168.1.31, respectively.
 The username and password of the FPGAs are both root.
 We have already configured ACM1 and ACM2 with necessary files to run the baseline and FlexFilt experiments, respectively.
 To access the experiment environment of the baseline, connect to ACM0 using screen:
 
 ```
-  $ screen -S ACM0 /dev/ttyACM1 115200
+  $ screen -S ACM0 /dev/ttyACM0 115200
 ```
 
 Please make sure to use 115200 as the baud rate in the screen command.
@@ -36,7 +36,7 @@ a baseline Rocketchip processor and to boot up the Linux kernel.
 Similarly, you can connect to ACM1, the experiment environment for FlexFilt:
 
 ```
-  $ screen -S ACM1 /dev/ttyACM2 115200
+  $ screen -S ACM1 /dev/ttyACM1 115200
 ```
 
 Here, you have all the required files to configure the PL side of the zedboard with a Rocket
@@ -48,8 +48,8 @@ To reattach to the screen session use the following
 command:
 
 ```
+  $ screen -rd -S ACM0
   $ screen -rd -S ACM1
-  $ screen -rd -S ACM2
 ```
 
 As mentioned before, we provide the necessary files and scripts to configure the FPGA, boot up the
@@ -115,13 +115,13 @@ As expected, FlexFilt allows the execution of the target instruction in the trus
 
 ### Performance Evaluation
 To demonstrate the negligble performance overhead of FlexFilt, we provide the executables for running a spec2000 benchmark application (i.e., bzip2) on the baseline Rocket core and the core enhanced with FlexFilt.
-To run the baseline experiments, run the spec script on ACM1:
+To run the baseline experiments, run the spec script on ACM0:
 
 ```
   $ ./spec_baseline.sh
 ```
 
-To run the FlexFilt experiments, run the spec script on ACM2:
+To run the FlexFilt experiments, run the spec script on ACM1:
 
 ```
   $ ./spec_flexfilt.sh
