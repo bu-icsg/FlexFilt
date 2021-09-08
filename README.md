@@ -18,12 +18,12 @@ You can ssh to our machine after configuring the private ssh key:
   $ ssh flexfilt@icsg-04.bu.edu
 ```
 
-You have access to two of our FPGAs available at /dev/ttyACM1 and /dev/ttyACM2.
-For simplicity, in the rest of this document we call the FPGA connected to /dev/ttyACM1 as ACM1 and the one connected to /dev/ttyACM2 as ACM2.
+You have access to two of our FPGAs available at /dev/ttyACM0 and /dev/ttyACM1.
+For simplicity, in the rest of this document we call the FPGA connected to /dev/ttyACM1 as ACM1 and the one connected to /dev/ttyACM1 as ACM1.
 We suggest you to use screen for connecting to these two FPGAs (we have provided you screen access to these two nodes).
 However, if you want to do ssh or scp to ACM0 and ACM1, their ip addresses are 192.168.1.33 and 192.168.1.31, respectively.
 The username and password of the FPGAs are both root.
-We have already configured ACM1 and ACM2 with necessary files to run the baseline and FlexFilt experiments, respectively.
+We have already configured ACM0 and ACM1 with necessary files to run the baseline and FlexFilt experiments, respectively.
 To access the experiment environment of the baseline, connect to ACM0 using screen:
 
 ```
@@ -72,13 +72,13 @@ The first program prevents the execution of WRPKR instruction (the equivalent of
 The second program follows the scenario described in Section 7.2 of the paper.
 In this scenario, we have two trusted functions, i.e., good_code1 and good_code2, that are allowed to execute WRPKR extended instruction.
 The execution of WRPKR instruction should be prevented in the rest of the program.
-As described in Section 5.3 of the paper, we assign the same ipkey value to both trusted functions and then configure FlexFilt to prevent the executoin of WRPKR in the default domain.
+As described in Section 5.3 of the paper, we assign the same ipkey value to both trusted functions and then configure FlexFilt to prevent the execution of WRPKR in the default domain.
 We use LD_PRELOAD to obtain the address range of the two trusted functions, and then invoke pkey_mprotect to associate them with the same instruction protection key.
 
 To demonstrate FlexFilt's capability in preventing a security attack (Section 7.2 of the paper), we provide a sample program with buffer overflow vulnerabilities.
 We provide an input for this program leveraging the buffer overflow vulnerability to execute a function that is never called in the program.
 This function executes a WRPKR instruction to modify the permission bits of a protection domain.
-We Configure FlexFilt to prevent the exuction of WRPKR instruction in the default domain and allow its execution in a trusted function.
+We Configure FlexFilt to prevent the execution of WRPKR instruction in the default domain and allow its execution in a trusted function.
 
 We provide the binaries for these programs as part of our bbl. 
 To run these test programs, you first need to bootup the kernel using bbl_func. To do this, please run func.sh script after connecting to ACM1:
@@ -105,7 +105,7 @@ Run the second test program:
   $ LD_PRELOAD=./myfilter.so ./filter2.rv
 ```
 
-As expected, FlexFilt prevents the execution of the target instruction in the untrusted funtion and allows its execution in the two trusted functions.
+As expected, FlexFilt prevents the execution of the target instruction in the untrusted function and allows its execution in the two trusted functions.
 
 Run the buffer overflow example:
 
@@ -115,7 +115,7 @@ Run the buffer overflow example:
 As expected, FlexFilt allows the execution of the target instruction in the trusted function and prevents its execution in the function executed by leveraging the buffer overflow vulnerability.
 
 ### Performance Evaluation
-To demonstrate the negligble performance overhead of FlexFilt, we provide the executables for running a spec2000 benchmark application (i.e., bzip2) on the baseline Rocket core and the core enhanced with FlexFilt.
+To demonstrate the negligible performance overhead of FlexFilt, we provide the executables for running a spec2000 benchmark application (i.e., bzip2) on the baseline Rocket core and the core enhanced with FlexFilt.
 To run the baseline experiments, run the spec script on ACM0:
 
 ```
