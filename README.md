@@ -50,6 +50,8 @@ As described in the last paragraph of Section 5.3 of the paper, we assign the sa
 We use LD_PRELOAD to obtain the address range of the two trusted functions, and then invoke pkey_mprotect to associate them with the same instruction protection key.
 Please note that both good_code1 and good_code2 belong to the same insrtuction protection domain, and they are both trusted (or good) code.
 You can find our LD_PRELOAD function at https://github.com/bu-icsg/FlexFilt/blob/new_code/code/myfilter.c.
+Please note that if new_filter2.rv gets executed without ld-preloading good_code1 and good_code2, these two functions by default belong to the untrusted default domain and as a result FlexFilt will prevent the execution of the target WRPKR instruction in them.
+The pkey_mprotect function assigns the same instruction protection domain (domain1) to good_code1 and good_code2 (https://github.com/bu-icsg/FlexFilt/blob/new_code/code/myfilter.c#L46 and https://github.com/bu-icsg/FlexFilt/blob/new_code/code/myfilter.c#L76) and FlexFilt is not configured to prevent the execution of any instruction in domain1.
 
 To test the buffer overflow example, please run the following command:
 
