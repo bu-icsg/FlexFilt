@@ -67,6 +67,9 @@ After you are done with one set of experiments, the easiest way to exit the Linu
 ## Running the experiments
 
 ### Functional Verification
+For detailed information about our test programs, please refer to the [new_code](https://github.com/bu-icsg/FlexFilt/tree/new_code) branch.
+The new_code branch also provides detailed comments on each test program.
+
 For functional verification, we provide two sample programs.
 The first program prevents the execution of WRPKR instruction (the equivalent of WRPKR in our RISC-V prototype) anywhere in the default domain.
 The second program follows the scenario described in Section 7.2 of the paper.
@@ -95,7 +98,7 @@ After the kernel boots up, you can run each of the above-mentioned test programs
 
 Run the first test program:
 ```
-  $ ./vuln1.rv 
+  $ ./filter1.rv 
 ```
 
 As expected, FlexFilt prevents the execution of the unsafe instruction in the default domain.
