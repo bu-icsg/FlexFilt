@@ -14,7 +14,7 @@ As a first step, each time before booting up Linux, please make sure to re-confi
   $ cat rocketchip_filter.bit.bin > /dev/xdevcfg
 ```
 
-A new bbl has been added on ACM0 FPGA (called new_bbl_func). Please bootup the Linux with this new bbl:
+A new bbl has been added on ACM1 FPGA (called new_bbl_func). Please bootup the Linux with this new bbl:
 
 ```
   $ ./fesvr-zynq new_bbl_func
