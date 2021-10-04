@@ -56,7 +56,7 @@ The pkey_mprotect function assigns the same instruction protection domain (domai
 To test the buffer overflow example, please run the following command:
 
 ```
-  $ cat payload1.txt | LD_PRELOAD=./myfilter.so ./vuln1.rv
+  $ cat new_payload.txt | LD_PRELOAD=./myfilter.so ./new_vuln.rv
 ```
 
 The source code for this program is at https://github.com/bu-icsg/FlexFilt/blob/new_code/code/new_vuln.c.
